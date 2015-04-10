@@ -31,6 +31,8 @@ router.route('/setdividendRate')
     
     .post(function(req, res) {
         
+        /* todo: oauth with req.body.oauth */
+        
   // upsert dividendRate
     db.collection(req.body.address).findAndModify({
         query: {type: "contract", currency: req.body.currency}, 
@@ -117,3 +119,9 @@ function unsigned_dividend_payments(currency, total_amount){
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
 app.use('/api/v1', router);
+
+
+
+var boot = require('./boot.js')
+
+boot.boot()

@@ -3,7 +3,9 @@ var mongojs = require("mongojs")
 var db = mongojs("mongodb://guest:guest@ds035448.mongolab.com:35448/bootable_version");   
 
 
-var connect_to_ripple = require('./c.js')
+exports.boot = function(){
+
+var connect_to_ripple = require('./connect_to_ripple.js')
 
 var collections = []
 
@@ -16,3 +18,6 @@ db.getCollectionNames(function(err, res){
         connect_to_ripple.connect(collections)
         console.log(collections)
         })
+
+
+}

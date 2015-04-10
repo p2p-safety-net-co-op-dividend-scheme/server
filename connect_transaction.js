@@ -10,9 +10,18 @@ var mongojs = require("mongojs")
 var db = mongojs("mongodb://guest:guest@ds035448.mongolab.com:35448/bootable_version");   
 
 
+/* boot test erase later
+var account = "rLaKjMvLbrAJwnH4VpawQ6ot9epZqJmbfQ"
+var destination = "r46XJq7UJmoPno2cURDRs8bB9crRLJgpcY"
+var currency ="RES"
+var amount = 20
+var dividendRate = 0.02
+connect_transaction(account, destination, currency, amount, dividendRate)
+boot test erase later*/
 
+var dividend_amount
 
-exports.connect_transaction = function(account, destination, currency, amount, dividendRate){
+function connect_transaction(account, destination, currency, amount, dividendRate){
 
    // upsert dividend_pathways
     db.collection(destination).findAndModify({
@@ -27,10 +36,9 @@ exports.connect_transaction = function(account, destination, currency, amount, d
         })
  
         
-        var dividend_amount = Number(amount)*dividendRate
+        dividend_amount = Number(amount)*dividendRate
         
-console.log("dividend_amount = " + dividend_amount)
-        
+        console.log("dividend amount: "+dividend_amount)
   db.collection(destination).findAndModify({
         query: {type: "unsigned_dividends", currency: currency}, 
         update:{$inc:{total_amount:dividend_amount}}, 
@@ -45,21 +53,23 @@ console.log("dividend_amount = " + dividend_amount)
 
 // ------------------------- upsert accumulated dividends
 
-// need swarm-algorithm
-
-// swarm-scanner
 var swarm = require('./swarm_redistribution.js')
 
-swarm.compute_swarm(destination, upsert_accumulated_dividend)
+swarm.compute_swarm(destination, currency, upsert_accumulated_dividend)
+
+}
 
 
-function upsert_accumulated_dividend(lines) {
 
-console.log("lines.length = " + lines.length)
 
-var dividend_piece = Number(dividend_amount) / Number(lines.length)
+function upsert_accumulated_dividend(lines, dividendRate_quota_sum, currency, account) {
+
+
+
+
+console.log("dividendRate_quota_sum: "+dividendRate_quota_sum)
+var dividend_piece = Number(dividend_amount) / Number(dividendRate_quota_sum)
 console.log("dividend_piece = " + dividend_piece)
-
 
 
  for(var i=0;i<lines.length;i++){
@@ -69,7 +79,7 @@ console.log("dividend_piece = " + dividend_piece)
           // upsert safety net (sum of all safety_net_pathways)
     db.collection(lines[i].account).findAndModify({
         query: {type: "accumulated_dividends", currency: currency}, 
-        update:{$inc:{accumulated_amount:Number(dividend_piece)}}, 
+        update:{$inc:{accumulated_dividends:Number(dividend_piece*lines[i].dividendRate_quota)}}, 
         upsert: true,
         new: true
         
@@ -82,48 +92,14 @@ console.log("dividend_piece = " + dividend_piece)
     }
 
 
-// when making payment --->
-find_highest_accumulated_dividend(lines)
-
 }   
     
 
-function find_highest_accumulated_dividend(lines){
-var highest_accumulated_dividend = {"account": "", "accumulated_amount": ""}
-
-console.log(highest_accumulated_dividend)
-
- for(var i=0;i<lines.length;i++){
-        console.log(lines[i].account)
-        
-        
-          // upsert safety net (sum of all safety_net_pathways)
-    db.collection(lines[i].account).findOne({
-        query: {type: "accumulated_dividends", currency: currency}
-
-        
-    }, 
-        function(err,doc){
-            console.log(doc)
-
-// filter out highest accumulated ammount (Optimization Layer)
-            if (highest_accumulated_dividend.accumulated_amount < doc.accumulated_amount){
-            highest_accumulated_dividend = {"account": account, "accumulated_amount": doc.accumulated_amount}
-            console.log("account = " + account +" doc.accumulated_amount = " +doc.accumulated_amount)
-            console.log(highest_accumulated_dividend)
-            }
-        })
-        
-    }
-    
-    
-}
-
-
-}//end module.exports
 
 
 
 
 
 
+
+exports.connect_transaction = connect_transaction;
