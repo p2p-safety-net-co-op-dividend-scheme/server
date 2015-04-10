@@ -118,7 +118,7 @@ function unsigned_dividend_payments(currency, total_amount){
 
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
-app.use('/api/v1', router);
+app.use('/v1', router);
 
 
 

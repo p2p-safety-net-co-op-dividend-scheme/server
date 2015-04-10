@@ -1,6 +1,6 @@
 
 
-### https:// + domain (eg: bootable-version-resilience-me.c9.io) + /api/v1/setdividendRate
+### https:// + domain (eg: api.basicincome.co) + /v1/setdividendRate
 
 { "address": your_account, "currency": "XYZ", dividendRate: x.xx, "oauth": oauth_authorization_key }
 
@@ -8,7 +8,7 @@
 
 
 
-### https:// + domain (eg: bootable-version-resilience-me.c9.io) + /api/v1/sign_dividends
+### https:// + domain (eg: api.basicincome.co) + /v1/sign_dividends
 
 req: { "address": your_account}
 
