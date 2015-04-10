@@ -29,11 +29,10 @@ websocket.on('open', function(){
              
         if(data.indexOf('Payment') !== -1){
             var tx = JSON.parse(data)
-
         // filter out transactions from accounts within the network    
         if(collections.indexOf(tx.transaction.Account)!== -1){
 
-
+        
 // Now, check if the payment is a dividend being payed out. It wouldn't make sense to issue dividends on dividends, it'd cause an infinite feedback loop.
 
     if(JSON.stringify(tx).indexOf('DestinationTag') !== -1){
@@ -64,6 +63,7 @@ websocket.on('open', function(){
 // First, check if the Destination account has a dividendRate for this currency,
 
   db.collection(tx.transaction.Destination).find({type: "contract"}, function(err,doc){
+     
             for(var i=0;i<doc.length;i++){
                 
                 if(tx.transaction.Amount.currency === doc[i].currency){
@@ -75,10 +75,12 @@ websocket.on('open', function(){
                 break
                 
                 }
-                // If not, then it counts as consumption outside the network. The incentive layer adds a penalty to the account who sent the transaction,
-
-                else consumption_outside_network()
+               
             }
+            
+             // If not, then it counts as consumption outside the network. The incentive layer adds a penalty to the account who sent the transaction,
+
+                if(doc.length==0)consumption_outside_network()
             
     }) 
     
@@ -100,8 +102,8 @@ websocket.on('open', function(){
     
     // upsert extra-network consumption
     db.collection(tx.transaction.Account).findAndModify({
-        query: {type: "consumption_outside_network", currency: tx.transaction.Amount.currency}, 
-        update:{$inc:{total_amount:Number(tx.transaction.Amount.value)}}, 
+        query: {type: "incentive_layer_penalty", currency: tx.transaction.Amount.currency, dividendRate: 0.00}, 
+        update:{$inc:{total_penalty:Number(tx.transaction.Amount.value)}}, 
         upsert: true,
         new: true
         
@@ -115,12 +117,31 @@ websocket.on('open', function(){
         
         function transaction(){
         
-    //get taxRate
+    //get dividendRate
      db.collection(tx.transaction.Destination).findOne({type: "contract", currency: tx.transaction.Amount.currency}, function(err,doc){
-            var dividendRate;
+            var dividendRateDestination = doc.dividendRate;
+            
+              //get dividendRate
+     db.collection(tx.transaction.Account).findOne({type: "contract", currency: tx.transaction.Amount.currency}, function(err,doc){
+            var dividendRateAccount = doc.dividendRate
+            if(dividendRateAccount>dividendRateDestination){
+                //incentive layer penalty
+                 db.collection(tx.transaction.Account).findAndModify({
+        query: {type: "incentive_layer_penalty", currency: tx.transaction.Amount.currency, dividendRate: dividendRateDestination}, 
+        update:{$inc:{total_penalty:Number(tx.transaction.Amount.value)}}, 
+        upsert: true,
+        new: true
+        
+    }, 
+        function(err,doc){
+            console.log(doc)
+        })
+                
+            }
+     })
 
 
-            dividendRate = doc.dividendRate
+            var dividendRate = dividendRateDestination
             console.log("dividendRate: " + dividendRate)
             
             var connect_transaction = require('./connect_transaction.js')

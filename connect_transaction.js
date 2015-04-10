@@ -62,24 +62,35 @@ swarm.compute_swarm(destination, currency, upsert_accumulated_dividend)
 
 
 
-function upsert_accumulated_dividend(lines, dividendRate_quota_sum, currency, account) {
+function upsert_accumulated_dividend(lines, dividendRate_quota_sum, currency, account, max_penalty_quota_sum, penalty) {
 
-
+// pointless to have max_penalty_quota_sum ?
 
 
 console.log("dividendRate_quota_sum: "+dividendRate_quota_sum)
+
+if(penalty ==true) console.log("max_penalty_quota_sum: "+max_penalty_quota_sum)
+
+// how much without penalty - amount with penalty
 var dividend_piece = Number(dividend_amount) / Number(dividendRate_quota_sum)
+if(penalty ==true) var penalty_dividend_piece = Number(dividend_amount) / Number(max_penalty_quota_sum)
 console.log("dividend_piece = " + dividend_piece)
+if(penalty== true) console.log("penalty_dividend_piece = " + penalty_dividend_piece)
 
 
  for(var i=0;i<lines.length;i++){
         console.log(lines[i].account)
         
+        console.log("dividend_amount: "+Number(dividend_piece*lines[i].dividendRate_quota))
+        console.log("penalty_dividend_amount: "+Number(dividend_piece*lines[i].max_penalty_quota))
         
-          // upsert safety net (sum of all safety_net_pathways)
+        if(penalty==true)var added_amount = Number(dividend_piece*lines[i].max_penalty_quota)
+        else var added_amount = Number(dividend_piece*lines[i].dividendRate_quota)
+        
+          // upsert
     db.collection(lines[i].account).findAndModify({
         query: {type: "accumulated_dividends", currency: currency}, 
-        update:{$inc:{accumulated_dividends:Number(dividend_piece*lines[i].dividendRate_quota)}}, 
+        update:{$inc:{accumulated_dividends:added_amount}}, 
         upsert: true,
         new: true
         
@@ -88,6 +99,24 @@ console.log("dividend_piece = " + dividend_piece)
             console.log(doc)
 
         })
+        
+        
+// decrease from incentive layer penalty
+        
+
+        if(penalty == true){
+        db.collection(lines[i].account).findAndModify({
+                query: {type: "incentive_layer_penalty", currency: currency}, 
+                update:{$inc:{total_penalty:-Number(dividend_piece*lines[i].dividendRate_quota)}}, 
+                upsert: true,
+                new: true
+                
+            }, 
+                function(err,doc){
+                    console.log(doc)
+        
+        })
+        }
         
     }
 
