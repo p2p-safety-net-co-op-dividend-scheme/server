@@ -1,0 +1,19 @@
+{
+  "name": "p2p-safety-net-co-op-dividend-scheme",
+  "version": "",
+  "description": "p2p-safety-net-co-op-dividend-scheme",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/p2p-safety-net-co-op-dividend-scheme/server.git"
+  }, 
+  "author": "Johan Nygren <emailsareobsolete@gmail.com>",
+
+
+  "dependencies": {
+    "express": "latest",
+    "body-parser":"latest",
+    "ws": "latest",
+    "mongojs": "latest"
+  }
+}
