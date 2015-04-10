@@ -1,0 +1,26 @@
+{
+  "name": "basicincome.co",
+  "version": "0.0.1",
+  "description": "a p2p-basic income network.",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/resilience-me/basicincome_co-server.git"
+  }, 
+  "author": "Johan Nygren <emailsareobsolete@gmail.com>",
+  "engines": { "node" : "0.10.36" },
+
+
+  "dependencies": {
+    "express": "latest",
+    "body-parser":"latest",
+    "node-curl":"latest",
+    "nodejs-websocket": "latest",
+    "mongojs": "latest",
+    "ripple-lib": "latest",
+    "async": "latest",
+    "blocktrail-sdk": "latest",
+    "querystring": "latest"
+
+  }
+}
