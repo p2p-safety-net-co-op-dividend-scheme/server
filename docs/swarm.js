@@ -36,7 +36,7 @@ filter_dividend_pathways_by_dividendRate(account, currency, dividendRate)
                        });
             
                temp.push(doc[i])                   
-}
+               }
                    
                }
               
