@@ -21,31 +21,25 @@ filter_dividend_pathways_by_dividendRate(account, currency, dividendRate)
                }
                else{
 
-// the account already has a doc, check if dividendRate is lower than the previous, filter out the highest one
-
-
-Array.prototype.filterObjects = function(key, value) {
-
-    return this.filter(function(x) { return x[key] === value; })
-
-}
-
-var a = temp.filterObjects("account", doc[i].account);
-
- 
-if(a[0].dividendRate > doc[i].dividendRate){  // check if dividendRate is lower than the previous, filter out the highest one
-    
+               // the account already has a doc, check if dividendRate is lower than the previous, filter out the highest one
+               
+               
+               Array.prototype.filterObjects = function(key, value) {
+                   return this.filter(function(x) { return x[key] === value; })
+               }
+               
+               var a = temp.filterObjects("account", doc[i].account);
+                
+               if(a[0].dividendRate > doc[i].dividendRate){  
     temp = temp.filter(function (el) {
                         return el.account !== doc[i].account;
                        });
             
-                       
     temp.push(doc[i])                   
-                           console.log(temp)
 }
                    
                }
               
            }
-})
-}
+        })
+  }
