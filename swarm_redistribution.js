@@ -3,11 +3,7 @@
 var mongojs = require("mongojs")
 var db = mongojs("mongodb://guest:guest@ds035448.mongolab.com:35448/bootable_version");   
 
-/*
-var account = "rLaKjMvLbrAJwnH4VpawQ6ot9epZqJmbfQ"
-var dividendRate = 0.02
-compute_swarm(account, "RES", function(data){console.log(data)})
-*/
+
 
 
 var LINES = []
@@ -18,9 +14,9 @@ var dividendRate_quota_sum = 0
 
 function compute_swarm(account_id, currency, dividend_amount, callback){
 
-lines(account_id)
+lines_for_X(account_id)
 
-function lines(account){
+function lines_for_X(account){
     
 
     db.collection(account).findOne({ type:"contract", currency: currency },function (err, doc){
@@ -94,7 +90,7 @@ if(temp_doc.account !== account_id){
     })
           }
 
-        lines(temp_doc.account)
+        lines_for_X(temp_doc.account)
           }
           //else console.log("CIRCULAR")
     }

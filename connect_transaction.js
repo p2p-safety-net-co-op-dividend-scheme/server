@@ -10,15 +10,6 @@ var mongojs = require("mongojs")
 var db = mongojs("mongodb://guest:guest@ds035448.mongolab.com:35448/bootable_version");   
 
 
-/* boot test erase later
-var account = "rLaKjMvLbrAJwnH4VpawQ6ot9epZqJmbfQ"
-var destination = "r46XJq7UJmoPno2cURDRs8bB9crRLJgpcY"
-var currency ="RES"
-var amount = 20
-var dividendRate = 0.02
-connect_transaction(account, destination, currency, amount, dividendRate)
-boot test erase later*/
-
 var dividend_amount
 
 function connect_transaction(account, destination, currency, amount, dividendRate){

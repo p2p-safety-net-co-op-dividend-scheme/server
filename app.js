@@ -119,40 +119,7 @@ function unsigned_dividend_payments(currency, total_amount){
 
 
 
-router.route('/removeAccount')
 
-    
-    .post(function(req, res) {
-        
-        /* todo: oauth with req.body.oauth */
-
-db.collection(req.body.address).drop(function(err,res){console.log(res)})
-
-var WebSocket = require('ws')
-
-var websocket = new WebSocket('wss://s1.ripple.com')
-
-
-var subscribeCommand = '{"command":"unsubscribe","id":0,"accounts":["'+req.body.address+'"]}'
-
-console.log(subscribeCommand)
-
-websocket.on('open', function(){
-    console.log('Connected to the Ripple payment network')
-    websocket.send(subscribeCommand)
-   
-   
-})    
-    websocket.on('message', function(data){
-        console.log('message', data)
-   
-    })
-
-
-                res.json("Removed all data for account: " +req.body.address); 
-
-
-    });
     
     
 
