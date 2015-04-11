@@ -37,6 +37,7 @@ function connect_transaction(account, destination, currency, amount, dividendRat
  
         
         dividend_amount = Number(amount)*dividendRate
+        console.log("dividend_amount: "+dividend_amount)
         
         console.log("dividend amount: "+dividend_amount)
   db.collection(destination).findAndModify({
@@ -55,42 +56,66 @@ function connect_transaction(account, destination, currency, amount, dividendRat
 
 var swarm = require('./swarm_redistribution.js')
 
-swarm.compute_swarm(destination, currency, upsert_accumulated_dividend)
+swarm.compute_swarm(destination, currency, dividend_amount, upsert_accumulated_dividend)
 
 }
 
 
 
 
-function upsert_accumulated_dividend(lines, dividendRate_quota_sum, currency, account, max_penalty_quota_sum, penalty) {
+function upsert_accumulated_dividend(lines, dividendRate_quota_sum, currency, account, dividend_amount) {
 
-// pointless to have max_penalty_quota_sum ?
 
 
 console.log("dividendRate_quota_sum: "+dividendRate_quota_sum)
 
-if(penalty ==true) console.log("max_penalty_quota_sum: "+max_penalty_quota_sum)
 
 // how much without penalty - amount with penalty
-var dividend_piece = Number(dividend_amount) / Number(dividendRate_quota_sum)
-if(penalty ==true) var penalty_dividend_piece = Number(dividend_amount) / Number(max_penalty_quota_sum)
+console.log(dividend_amount)
+console.log(dividendRate_quota_sum)
+
+console.log(typeof dividend_amount)
+console.log(typeof dividendRate_quota_sum)
+var dividend_piece = Number(dividend_amount) * Number(dividendRate_quota_sum / lines.length) // sum of dividend_rate_quotas / number of nodes
+
+
 console.log("dividend_piece = " + dividend_piece)
-if(penalty== true) console.log("penalty_dividend_piece = " + penalty_dividend_piece)
 
 
  for(var i=0;i<lines.length;i++){
         console.log(lines[i].account)
+        if(JSON.stringify(lines[i]).indexOf("dividendRate_quota_without_penalty")!==-1){
+            var dividendRate_quota_without_penalty = lines[i].dividendRate_quota_without_penalty
+            console.log("dividendRate_quota_without_penalty: "+dividendRate_quota_without_penalty)
+            var dividend_amount_without_penalty = Number(dividend_piece / dividendRate_quota_without_penalty)
+                    
+        // decrease from incentive layer penalty
+                
+                db.collection(lines[i].account).findAndModify({
+                        query: {type: "incentive_layer_penalty", currency: currency}, 
+                        update:{$inc:{total_penalty:-dividend_amount_without_penalty}}, 
+                        upsert: true,
+                        new: true
+                        
+                    }, 
+                        function(err,doc){
+                            console.log(doc)
+                
+                })
+            
+            
+        }
+        
+
+        var dividend_amount = Number(dividend_piece / lines[i].dividendRate_quota)
         
         console.log("dividend_amount: "+Number(dividend_piece*lines[i].dividendRate_quota))
-        console.log("penalty_dividend_amount: "+Number(dividend_piece*lines[i].max_penalty_quota))
-        
-        if(penalty==true)var added_amount = Number(dividend_piece*lines[i].max_penalty_quota)
-        else var added_amount = Number(dividend_piece*lines[i].dividendRate_quota)
+
         
           // upsert
     db.collection(lines[i].account).findAndModify({
         query: {type: "accumulated_dividends", currency: currency}, 
-        update:{$inc:{accumulated_dividends:added_amount}}, 
+        update:{$inc:{accumulated_dividends:dividend_amount}}, 
         upsert: true,
         new: true
         
@@ -101,22 +126,8 @@ if(penalty== true) console.log("penalty_dividend_piece = " + penalty_dividend_pi
         })
         
         
-// decrease from incentive layer penalty
-        
 
-        if(penalty == true){
-        db.collection(lines[i].account).findAndModify({
-                query: {type: "incentive_layer_penalty", currency: currency}, 
-                update:{$inc:{total_penalty:-Number(dividend_piece*lines[i].dividendRate_quota)}}, 
-                upsert: true,
-                new: true
-                
-            }, 
-                function(err,doc){
-                    console.log(doc)
         
-        })
-        }
         
     }
 

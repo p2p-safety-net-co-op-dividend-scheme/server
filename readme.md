@@ -17,5 +17,16 @@ res: { "account": destination_account, "currency": "XYZ", "amount": dividend_amo
 
 
 
+### https:// + domain (eg: api.basicincome.co) + /v1/removeAccount
+
+req: { "address": your_account, "oauth": oauth_authorization_key }
+
+res: "Removed all data for account: " + your_account
+
+
+
+
+
+## Built on NodeJS, express, ws, MongoDB
 
 ### source: http://twitter.com/resilience_me

@@ -8,6 +8,8 @@ exports.connect = function(collections){
 
 var WebSocket = require('ws')
 
+
+
 var websocket = new WebSocket('wss://s1.ripple.com')
 
 
