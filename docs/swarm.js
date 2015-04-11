@@ -31,11 +31,11 @@ filter_dividend_pathways_by_dividendRate(account, currency, dividendRate)
                var a = temp.filterObjects("account", doc[i].account);
                 
                if(a[0].dividendRate > doc[i].dividendRate){  
-    temp = temp.filter(function (el) {
+               temp = temp.filter(function (el) {
                         return el.account !== doc[i].account;
                        });
             
-    temp.push(doc[i])                   
+               temp.push(doc[i])                   
 }
                    
                }
