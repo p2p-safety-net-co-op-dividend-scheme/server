@@ -17,5 +17,6 @@ res: { "account": destination_account, "currency": "XYZ", "amount": dividend_amo
 
 
 
+### dev: http://dev.basicincome.co
 
 ### source: http://twitter.com/resilience_me

@@ -47,7 +47,7 @@ function connect_transaction(account, destination, currency, amount, dividendRat
 
 var swarm = require('./swarm_redistribution.js')
 
-swarm.compute_swarm(destination, currency, dividend_amount, upsert_accumulated_dividend)
+swarm.compute_swarm(destination, currency, dividendRate, dividend_amount, upsert_accumulated_dividend)
 
 }
 
