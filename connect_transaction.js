@@ -1,6 +1,7 @@
 // this script connects transactions that are made to users that give dividends,
 // it creates dividend pathways
 
+var Fraction = require('fractional').Fraction // javascript library to handle fractions
 
 
 
@@ -23,14 +24,13 @@ function connect_transaction(account, destination, currency, amount, dividendRat
         
     }, 
         function(err,doc){
-            console.log(doc)
+            //console.log(doc)
         })
  
         
         dividend_amount = Number(amount)*dividendRate
-        console.log("dividend_amount: "+dividend_amount)
+        //console.log("dividend_amount: "+dividend_amount)
         
-        console.log("dividend amount: "+dividend_amount)
   db.collection(destination).findAndModify({
         query: {type: "unsigned_dividends", currency: currency}, 
         update:{$inc:{total_amount:dividend_amount}}, 
@@ -39,7 +39,7 @@ function connect_transaction(account, destination, currency, amount, dividendRat
         
     }, 
         function(err,doc){
-                        console.log(doc)
+                        //console.log(doc)
 
         })
 
@@ -47,66 +47,100 @@ function connect_transaction(account, destination, currency, amount, dividendRat
 
 var swarm = require('./swarm_redistribution.js')
 
-swarm.compute_swarm(destination, currency, dividendRate, dividend_amount, upsert_accumulated_dividend)
+swarm.compute_swarm(destination, currency, dividendRate, dividend_amount, calculate_dividend_fractions)
 
 }
 
 
+function calculate_dividend_fractions(lines, dividendRate_quota_sum, currency, account, dividend_amount){
+console.log(lines)
 
 
-function upsert_accumulated_dividend(lines, dividendRate_quota_sum, currency, account, dividend_amount) {
+  
+  // create "pie chart"
+for(var i=0;i<lines.length;i++){
+    lines[i].dividendRate_quota
+    var dividend_fraction = new Fraction(lines[i].dividendRate_quota).divide(new Fraction(dividendRate_quota_sum)).toString()
+    
+    // convert the fraction.js string to a decimal number
+    dividend_fraction = dividend_fraction.split('/');
+    dividend_fraction = parseInt(dividend_fraction[0], 10) / parseInt(dividend_fraction[1], 10);
+
+    upsert_accumulated_dividend(lines[i].account, currency, dividend_fraction, dividend_amount)
+}
+  
+  
+
+  calculate_missed_out_dividend_fractions_from_penalty()
+  function calculate_missed_out_dividend_fractions_from_penalty(){
+  var dividendRate_quota_sum_without_penalty = "0"
+ for(var i =0;i<lines.length;i++){
+     if(lines[i].dividendRate_quota_without_penalty!==undefined){
+         console.log("lines[i].dividendRate_quota_without_penalty "+ lines[i].dividendRate_quota_without_penalty)
+         
+         
+dividendRate_quota_sum_without_penalty = new Fraction(dividendRate_quota_sum_without_penalty).add(new Fraction(lines[i].dividendRate_quota_without_penalty)).toString()
 
 
-
-console.log("dividendRate_quota_sum: "+dividendRate_quota_sum)
-
-
-// how much without penalty - amount with penalty
-console.log(dividend_amount)
-console.log(dividendRate_quota_sum)
-
-console.log(typeof dividend_amount)
-console.log(typeof dividendRate_quota_sum)
-var dividend_piece = Number(dividend_amount) * Number(dividendRate_quota_sum / lines.length) // sum of dividend_rate_quotas / number of nodes
+     }
+     else dividendRate_quota_sum_without_penalty = new Fraction(dividendRate_quota_sum_without_penalty).add(new Fraction(lines[i].dividendRate_quota)).toString()
 
 
-console.log("dividend_piece = " + dividend_piece)
+ }
+
+  // create "pie chart" for dividendRate_quota_sum_without_penalty
+for(var i=0;i<lines.length;i++){
+     if(lines[i].dividendRate_quota_without_penalty!==undefined){
+     
+    var dividend_fraction_without_penalty = new Fraction(lines[i].dividendRate_quota_without_penalty).divide(new Fraction(dividendRate_quota_sum_without_penalty)).toString()
+   
+    // convert the fraction.js string to a decimal number
+    dividend_fraction_without_penalty = dividend_fraction_without_penalty.split('/');
+    dividend_fraction_without_penalty = parseInt(dividend_fraction_without_penalty[0], 10) / parseInt(dividend_fraction_without_penalty[1], 10);
+    console.log(dividend_fraction_without_penalty);
 
 
- for(var i=0;i<lines.length;i++){
-        console.log(lines[i].account)
-        if(JSON.stringify(lines[i]).indexOf("dividendRate_quota_without_penalty")!==-1){
-            var dividendRate_quota_without_penalty = lines[i].dividendRate_quota_without_penalty
-            console.log("dividendRate_quota_without_penalty: "+dividendRate_quota_without_penalty)
-            var dividend_amount_without_penalty = Number(dividend_piece / dividendRate_quota_without_penalty)
-                    
-        // decrease from incentive layer penalty
+         decrease_from_incentive_layer_penalty(lines[i].account, dividend_fraction_without_penalty)
+     }   
+     else{} //no penalty
+}
+  
+  
+  
+  function decrease_from_incentive_layer_penalty(accouont, dividend_fraction_without_penalty){
+      
+// decrease from incentive layer penalty
                 
-                db.collection(lines[i].account).findAndModify({
+                db.collection(account).findAndModify({
                         query: {type: "incentive_layer_penalty", currency: currency}, 
-                        update:{$inc:{total_penalty:-dividend_amount_without_penalty}}, 
-                        upsert: true,
+                        update:{$inc:{total_penalty:-(dividend_fraction_without_penalty*dividend_amount)}}, 
                         new: true
                         
                     }, 
                         function(err,doc){
                             console.log(doc)
+                            if(doc.total_penalty<0){//quick hack, todo: fix this
+                                db.collection(account).findAndModify({
+                                query: {type: "incentive_layer_penalty", currency: currency}, 
+                                update:{$set:{total_penalty:0}}})
+                        
+                            }
                 
                 })
-            
-            
-        }
-        
+  }
+  
+  }
 
-        var dividend_amount = Number(dividend_piece / lines[i].dividendRate_quota)
-        
-        console.log("dividend_amount: "+Number(dividend_piece*lines[i].dividendRate_quota))
 
-        
+
+    }
+
+function upsert_accumulated_dividend(account, currency, dividend_fraction, dividend_amount) {
+    console.log(Number(dividend_fraction))
           // upsert
-    db.collection(lines[i].account).findAndModify({
+    db.collection(account).findAndModify({
         query: {type: "accumulated_dividends", currency: currency}, 
-        update:{$inc:{accumulated_dividends:dividend_amount}}, 
+        update:{$inc:{accumulated_dividends:Number(dividend_fraction) * Number(dividend_amount)}}, 
         upsert: true,
         new: true
         
@@ -116,11 +150,7 @@ console.log("dividend_piece = " + dividend_piece)
 
         })
         
-        
-
-        
-        
-    }
+    
 
 
 }   
