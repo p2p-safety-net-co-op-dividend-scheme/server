@@ -38,24 +38,48 @@ websocket.on('open', function(){
 // Now, check if the payment is a dividend being payed out. It wouldn't make sense to issue dividends on dividends, it'd cause an infinite feedback loop.
 
     if(JSON.stringify(tx).indexOf('DestinationTag') !== -1){
+        function check_dividend_signature_and_update_data(tx){
   db.collection(tx.transaction.Account).findOne({type: "pending_dividendSignature", currency: tx.transaction.Amount.currency}, function(err,doc){
       console.log(doc)
-      
+            
+  
+             
+
 
             if(doc.destination_tag == tx.transaction.DestinationTag && doc.amount == tx.transaction.Amount.value){ 
-               console.log("fit")
-                                 db.collection(tx.transaction.Account).findAndModify({
+                                
+                
+          // decrease the dividend-pathway line between tx.transaction.Account and tx.transaction.Destination with tx.transaction.Amount.value
+               var find_dividend_pathway_line_between_nodes = require('./find_dividend_pathway_line_between_nodes.js')
+               find_dividend_pathway_line_between_nodes.find_dividend_pathway_line_between_nodes(tx.transaction.Account, tx.transaction.Destination, tx.transaction.Amount.currency, diminish_dividend_pathways_in_line_between_nodes)
+               function diminish_dividend_pathways_in_line_between_nodes(PATH){
+                for(var i=0;i<PATH.length;i++){
+                       db.collection(PATH.from).findAndModify({
+                          query: {type: "dividend_pathway", currency: tx.transaction.Amount.currency, dividendRate: doc.dividendRate}, 
+                          update:{$inc:{total_pathway:-Number(tx.transaction.Amount.value)}}
+                          // sort accumulated_dividends by dividendRate
+                          
+                      })
+                }
+            }
+            
+          // decrease unsigned_dividends documents and remove pending_dividendSignature
+             db.collection(tx.transaction.Account).findAndModify({
                           query: {type: "unsigned_dividends", currency: tx.transaction.Amount.currency}, 
                           update:{$inc:{total_amount:-Number(tx.transaction.Amount.value)}}
                           
                       })
                           
-                           db.collection(tx.transaction.Account).remove({type: "pending_dividendSignature", currency: tx.transaction.Amount.currency})
+                           db.collection(tx.transaction.Account).remove({type: "pending_dividendSignature", currency: tx.transaction.Amount.currency, destination_tag:doc.destination_tag})
                 
+            
             }
 
                
             }) 
+    }
+        
+        
     }
 
 // If it isn't, then process it as usual:    

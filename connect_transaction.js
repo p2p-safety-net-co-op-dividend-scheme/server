@@ -32,7 +32,7 @@ function connect_transaction(account, destination, currency, amount, dividendRat
         //console.log("dividend_amount: "+dividend_amount)
         
   db.collection(destination).findAndModify({
-        query: {type: "unsigned_dividends", currency: currency}, 
+        query: {type: "unsigned_dividends", dividendRate: dividendRate, currency: currency}, //dividendRate is for diminish_dividend_pathways_in_line_between_nodes() function
         update:{$inc:{total_amount:dividend_amount}}, 
         upsert: true,
         new: true

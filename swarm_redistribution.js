@@ -167,8 +167,8 @@ push_to_LINES(doc, dividendRate_quota_X, penalty_dividendRate, dividendRate_quot
 
 
 
-        if(penalty_dividendRate !== undefined)LINES.push({account: doc.account, pathway: doc.total_pathway, dividendRate_quota: dividendRate_quota_X, line: Number(line_X), dividendRate_quota_without_penalty: dividendRate_quota_without_penalty}) 
-        else LINES.push({account: doc.account, pathway: doc.total_pathway, dividendRate_quota: dividendRate_quota_X, line: Number(line_X)}) //add total pathway here
+        if(penalty_dividendRate !== undefined)LINES.push({account: doc.account, pathway: doc.total_pathway, dividendRate: dividendRate, dividendRate_quota: dividendRate_quota_X, line: Number(line_X), dividendRate_quota_without_penalty: dividendRate_quota_without_penalty}) 
+        else LINES.push({account: doc.account, pathway: doc.total_pathway, dividendRate: dividendRate, dividendRate_quota: dividendRate_quota_X, line: Number(line_X)}) //add total pathway here
 
        lines_for_X(doc.account, currency, doc.dividendRate, dividendRate_quota_X)
 

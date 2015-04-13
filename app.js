@@ -92,11 +92,11 @@ db.collection(req.body.address).find({
     }, function(err,doc){
         console.log(doc)
         for(var i=0; i<doc.length;i++){
-        unsigned_dividend_payments(doc[i].currency, doc[i].total_amount)
+        unsigned_dividend_payments(doc[i].currency, doc[i].dividendRate, doc[i].total_amount)
         }   
     })
 
-function unsigned_dividend_payments(currency, total_amount){
+function unsigned_dividend_payments(currency, dividendRate, total_amount){
     
     compute_swarm(req.body.address, currency, find_highest_accumulated_dividend)
 function compute_swarm(account_id, currency, callback){
@@ -195,7 +195,7 @@ loop(lines)
                 
                      // upsert pending_dividendSignature
     db.collection(req.body.address).findAndModify({
-        query: {type: "pending_dividendSignature", currency: JSON.parse(highest_accumulated_dividend).currency}, 
+        query: {type: "pending_dividendSignature", currency: JSON.parse(highest_accumulated_dividend).currency, dividendRate: dividendRate}, 
         update:{$set:{destination_tag: destination_tag, amount: dividend_amount}}, 
         upsert: true,
         new: true
@@ -203,7 +203,6 @@ loop(lines)
     }, 
         function(err,doc){
             console.log(doc)
-            res.json(doc); 
         })    
 
 
