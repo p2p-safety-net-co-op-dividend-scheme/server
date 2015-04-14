@@ -1,4 +1,3 @@
-
 ![img](http://i.imgur.com/VVl092v.png) 
 ### /api/setdividendRate
 

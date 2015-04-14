@@ -3,7 +3,7 @@ var mongojs = require("mongojs")
 var db = mongojs("mongodb://guest:guest@ds035448.mongolab.com:35448/bootable_version");   
 
 
-// The functions in Swarm Redistribution
+// The functions in Swarm Redistribution, isolated so you can study them.
 
 /* Steps:
 * lines_for_X()

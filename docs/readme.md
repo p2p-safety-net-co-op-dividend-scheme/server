@@ -1,14 +1,11 @@
-## Wiki: Swarm Redistribution
+<b>FAQ</b>: Could you explain it in a simple metaphor ?
+
+<b>It's like a co-op dividend scheme, except the dividends are pooled and distributed across a larger customer base.</b>
+<br><br><br>
 
 
-![alt tag](http://i.imgur.com/TNwsT37.png)
+### Docs:
+<br>
+[docs/financial_platform.md](/financial_platforms.md)
 
-
-<b>FAQ</b>: If I've created multiple <a href="https://www.youtube.com/watch?v=bxyjt2T_nLQ">dividend pathways</a> to one node, but in different dividendRates ?
-
-<b>If a node has multiple dividend pathways, it will use the most efficient one. </b>
-
-See <a href="https://github.com/p2p-safety-net-co-op-dividend-scheme/server/blob/master/docs/swarm.js">swarm.js</a>
-```js
-filter_dividend_pathways_by_dividendRate()
-```
+[docs/swarm_redistribution.md](/swarm_redistribution.md)
