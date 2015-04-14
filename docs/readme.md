@@ -6,6 +6,6 @@
 
 ### Docs:
 <br>
-[docs/financial_platform.md](/financial_platforms.md)
+[docs/financial_platform.md](financial_platforms.md)
 
-[docs/swarm_redistribution.md](/swarm_redistribution.md)
+[docs/swarm_redistribution.md](swarm_redistribution.md)
