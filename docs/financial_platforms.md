@@ -8,8 +8,6 @@ If the platform has an API through which you can read transactions, and you trus
 financial_platforms/connect_to_platform.js
 ```
 
-<br><br><br>
-<img width="30%" src="https://wiki.ripple.com/images/3/32/Logo_M.png"><img width="30%" src="http://hobbieworks.com/wp-content/uploads/2014/07/bitcoin-logo.png">
 
 
 <br><br>
@@ -20,7 +18,7 @@ financial_platforms/connect_to_platform.js
 
 <b>Basically, you tell the other end to send you a message every time a user recieves a transaction. These notifications are usually recieved via http and websocket.
 
-On the event of a transaction,
+On the event of a transaction,</b>
 
 ```js
 websocket.on('message', function(tx){
@@ -31,6 +29,12 @@ connect_transaction.connect_transaction(tx)
 
 ```
 
-And you're done. 
+<b>And you're done. </b>
 
 
+<br><br><br>
+<b>FAQ</b>: Examples of financial platforms that could work ?
+<br><br>
+<b>Ripple and Bitcoin. You might be able to work with older platforms but it's a waste of time. My favorite platform this year is Ripple.</b>
+<br><br>
+<img width="30%" src="https://wiki.ripple.com/images/3/32/Logo_M.png"><img width="30%" src="http://hobbieworks.com/wp-content/uploads/2014/07/bitcoin-logo.png">
