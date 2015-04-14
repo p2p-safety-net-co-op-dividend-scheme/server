@@ -1,21 +1,39 @@
 
+![img](http://i.imgur.com/VVl092v.png) 
+### /api/setdividendRate
 
-### https:// + domain (eg: api.basicincome.co) + /v1/setdividendRate
+<b>req:</b> 
 
+```js
 { "address": your_account, "currency": "XYZ", dividendRate: x.xx, "oauth": oauth_authorization_key }
+```
 
 
 
 
+<br><br>
 
-### https:// + domain (eg: api.basicincome.co) + /v1/sign_dividends
+![img](http://i.imgur.com/VVl092v.png) 
+### /api/sign_dividends
 
-req: { "address": your_account}
+<b>req:</b> 
+```js
+{ "address": your_account}
+```
 
-res: { "account": destination_account, "currency": "XYZ", "amount": dividend_amount, "destination_tag": how_the_system_knows_you_paid }
+
+<b>res:</b> 
+```js
+{"account": destination_account, "currency": "XYZ", "amount": dividend_amount, "destination_tag": how_the_system_knows_you_paid }
+```
 
 
+[![ScreenShot](http://i.imgur.com/vhzliIh.png
+)](https://www.youtube.com/watch?v=fFFwN1E1O8c&feature=youtu.be)
 
+
+<img width="62%" src="http://i.imgur.com/6fCegTC.gif">
+<br><br>
 
 ### dev: http://dev.basicincome.co
 
