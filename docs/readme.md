@@ -13,5 +13,4 @@ See <a href="https://github.com/p2p-safety-net-co-op-dividend-scheme/server/blob
 filter_dividend_pathways_by_dividendRate()
 ```
 
-
-
+connect_transaction

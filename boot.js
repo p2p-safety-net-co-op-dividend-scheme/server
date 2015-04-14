@@ -10,7 +10,7 @@ var db = mongojs("mongodb://guest:guest@ds035448.mongolab.com:35448/bootable_ver
 
 exports.boot = function(){
 
-var connect_to_ripple = require('./connect_to_ripple.js')
+var connect_to_ripple = require('./financial_platforms/connect_to_ripple.js')
 
 var collections = []
 

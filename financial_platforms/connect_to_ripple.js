@@ -50,7 +50,7 @@ websocket.on('open', function(){
                                 
                 
           // decrease the dividend-pathway line between tx.transaction.Account and tx.transaction.Destination with tx.transaction.Amount.value
-               var find_dividend_pathway_line_between_nodes = require('./find_dividend_pathway_line_between_nodes.js')
+               var find_dividend_pathway_line_between_nodes = require('../find_dividend_pathway_line_between_nodes.js')
                find_dividend_pathway_line_between_nodes.find_dividend_pathway_line_between_nodes(tx.transaction.Account, tx.transaction.Destination, tx.transaction.Amount.currency, diminish_dividend_pathways_in_line_between_nodes)
                function diminish_dividend_pathways_in_line_between_nodes(PATH){
                 for(var i=0;i<PATH.length;i++){
@@ -170,7 +170,7 @@ websocket.on('open', function(){
             var dividendRate = dividendRateDestination
             console.log("dividendRate: " + dividendRate)
             
-            var connect_transaction = require('./connect_transaction.js')
+            var connect_transaction = require('../connect_transaction.js')
 
 
             connect_transaction.connect_transaction(tx.transaction.Account, tx.transaction.Destination, tx.transaction.Amount.currency, tx.transaction.Amount.value, dividendRate)
