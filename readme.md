@@ -26,13 +26,13 @@
 ```js
 {"account": destination_account, "currency": "XYZ", "amount": dividend_amount, "destination_tag": how_the_system_knows_you_paid }
 ```
-
+<br><br>
 
 [![ScreenShot](http://i.imgur.com/vhzliIh.png
 )](https://www.youtube.com/watch?v=fFFwN1E1O8c&feature=youtu.be)
+<br><br>
 
-
-<img width="62%" src="http://i.imgur.com/6fCegTC.gif">
+<img src="http://i.imgur.com/6fCegTC.gif">
 <br><br>
 
 ### dev: http://dev.basicincome.co
