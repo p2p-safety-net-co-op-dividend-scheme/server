@@ -8,7 +8,7 @@
 
 <b>If a node has multiple dividend pathways, it will use the most efficient one. </b>
 
-See <a href="https://github.com/p2p-safety-net-co-op-dividend-scheme/server/blob/master/docs/swarm.js">swarm.js</a>
+See <a href="https://github.com/p2p-safety-net-co-op-dividend-scheme/server/blob/master/swarm_redistribution.js">swarm_redistribution.js</a>
 ```js
 filter_dividend_pathways_by_dividendRate()
 ```
