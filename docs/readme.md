@@ -1,6 +1,6 @@
 <b>FAQ</b>: Could you explain it in a simple metaphor ?
 
-<b>It's like a co-op dividend scheme, except the dividends are pooled and distributed across a larger customer base.</b>
+<b>It's like a <a href="http://en.wikipedia.org/wiki/The_Co-operative_Group#Dividend_and_membership_scheme">co-op dividend scheme</a>, except the dividends are pooled and distributed across a larger customer base.</b>
 <br><br><br>
 
 
